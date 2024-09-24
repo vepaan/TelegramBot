@@ -1,17 +1,13 @@
 import json
 import webbrowser
 
-# Load the JSON data
-with open('channel_messages.json', 'r') as file:
+with open('channel_messages.json', 'r') as file: # Loading json data from telegram 
     data = json.load(file)
 
-# Iterate over each message
 for message in data:
-    # Get the message text
     message_text = message.get('message', '')
     
-    # Check if the message contains a number
+    #im checking if the message contains a number. In my target telegram group, it was only allowed to post "Update" or a number if the appointments were open"
     if any(char.isdigit() for char in message_text):
-        # Open YouTube if a number is found
-        webbrowser.open("https://www.youtube.com/")
-        break  # Stop iterating if YouTube is opened
+        webbrowser.open("https://www.youtube.com/") #using youtube as a dummy website but enter your desired website
+        break  # Stop the loop if the desired website is opened.
